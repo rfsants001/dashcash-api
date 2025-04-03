@@ -34,19 +34,19 @@ export class BankAccountsService {
 
   async update(
     userId: string,
-    banckAccountId: string,
+    bankAccountId: string,
     updateBankAccountDto: UpdateBankAccountDto,
   ) {
     try {
       await this.validateBankAccountOwnershipService.validate(
         userId,
-        banckAccountId,
+        bankAccountId,
       );
 
       const { color, initialBalance, name, type } = updateBankAccountDto;
       return this.bankAccountRepo.update({
         where: {
-          id: banckAccountId,
+          id: bankAccountId,
         },
         data: {
           color,
@@ -60,16 +60,16 @@ export class BankAccountsService {
     }
   }
 
-  async remove(userId: string, banckAccountId: string) {
+  async remove(userId: string, bankAccountId: string) {
     try {
       await this.validateBankAccountOwnershipService.validate(
         userId,
-        banckAccountId,
+        bankAccountId,
       );
 
       await this.bankAccountRepo.delete({
         where: {
-          id: banckAccountId,
+          id: bankAccountId,
         },
       });
       return null;
