@@ -5,6 +5,7 @@ import { TransactionRepository } from 'src/shared/database/repositories/transact
 import { ValidateBankAccountOwnershipService } from '../../../bank-accounts/services/validate-bank-account-ownership/validate-bank-account-ownership.service';
 import { ValidateCategoriesOwnershipService } from '../../../categories/services/validate-categories-ownership/validate-categories-ownership.service';
 import { ValidateTransactionsOwnershipService } from '../validate-transactions-ownership/validate-transactions-ownership.service';
+import { TransactionType } from '@prisma/client';
 
 @Injectable()
 export class TransactionsService {
@@ -37,10 +38,25 @@ export class TransactionsService {
     });
   }
 
-  findAllByUserId(userId: string) {
+  findAllByUserId(
+    userId: string,
+    filters: {
+      month: number;
+      year: number;
+      bankAccountId?: string;
+      type?: TransactionType;
+    },
+  ) {
+    const { month, year, bankAccountId, type } = filters;
     return this.transactionRepository.findMany({
       where: {
         userId,
+        bankAccountId: bankAccountId,
+        date: {
+          gte: new Date(Date.UTC(year, month)),
+          lt: new Date(Date.UTC(year, month + 1)),
+        },
+        type: type,
       },
     });
   }
