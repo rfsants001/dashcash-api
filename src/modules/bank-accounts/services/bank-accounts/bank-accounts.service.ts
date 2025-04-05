@@ -24,12 +24,31 @@ export class BankAccountsService {
     });
   }
 
-  findAllByUserId(userId: string) {
-    return this.bankAccountRepo.findFirst({
+  async findAllByUserId(userId: string) {
+    const bankAccounts = await this.bankAccountRepo.findMany({
       where: {
         userId,
       },
+      include: {
+        transactions: {
+          select: {
+            type: true,
+            amount: true,
+          },
+        },
+      },
     });
+
+    return bankAccounts.map((bankAccount) => ({
+      ...bankAccount,
+      currentBalance: bankAccount.transactions.reduce(
+        (acc, transaction) =>
+          transaction.type === 'INCOME'
+            ? acc + transaction.amount
+            : acc - transaction.amount,
+        bankAccount.initialBalance,
+      ),
+    }));
   }
 
   async update(
