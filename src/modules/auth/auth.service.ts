@@ -73,7 +73,7 @@ export class AuthService {
       },
     });
 
-    const token = this.generateToken(user.id);
+    const token = await this.generateToken(user.id);
     return { token };
   }
 
