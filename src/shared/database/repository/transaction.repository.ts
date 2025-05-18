@@ -1,6 +1,6 @@
-import { Prisma, Transaction } from '@prisma/client';
 import { BaseRepository } from './base.repository';
 import { PrismaService } from '../prisma/prisma.service';
+import { Transaction, Prisma } from '@prisma/client';
 
 export class TransactionRepository extends BaseRepository<
   Transaction,

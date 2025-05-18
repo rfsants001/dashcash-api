@@ -1,6 +1,6 @@
-import { Category, Prisma } from '@prisma/client';
 import { BaseRepository } from './base.repository';
 import { PrismaService } from '../prisma/prisma.service';
+import { Category, Prisma } from '@prisma/client';
 
 export class CategoryRepository extends BaseRepository<
   Category,

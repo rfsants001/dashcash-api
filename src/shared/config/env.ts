@@ -5,12 +5,15 @@ class EnvConfig {
   @IsString()
   @IsNotEmpty()
   DB_HOST: string;
+
+  @IsString()
+  @IsNotEmpty()
+  JWT_SECRET: string;
 }
 
-const dbUrl = process.env.DB_HOST ?? '';
-
 export const env: EnvConfig = plainToInstance(EnvConfig, {
-  DB_HOST: dbUrl,
+  DB_HOST: process.env.DATABASE_URL,
+  JWT_SECRET: process.env.JWT_SECRET,
 });
 
 const errors = validateSync(env);
