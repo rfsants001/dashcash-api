@@ -1,34 +1,26 @@
-import { BaseRepository } from './base.repository';
 import { PrismaService } from '../prisma/prisma.service';
-import { Transaction, Prisma } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 
-export class TransactionRepository extends BaseRepository<
-  Transaction,
-  Prisma.TransactionCreateInput,
-  Prisma.TransactionUpdateInput
-> {
-  constructor(protected prisma: PrismaService) {
-    super(prisma, prisma.transaction);
+export class TransactionRepository {
+  constructor(private prismaService: PrismaService) {}
+
+  create(createDto: Prisma.TransactionCreateArgs) {
+    return this.prismaService.transaction.create(createDto);
   }
 
-  async createRaw(data: Prisma.TransactionCreateInput): Promise<Transaction> {
-    return this.create(data);
+  findMany(findMany: Prisma.TransactionFindManyArgs) {
+    return this.prismaService.transaction.findMany(findMany);
   }
 
-  async updateRaw(
-    where: Prisma.TransactionWhereUniqueInput,
-    data: Prisma.TransactionUpdateInput,
-  ): Promise<Transaction> {
-    return this.update(where, data);
+  findFirst(findFirst: Prisma.TransactionFindFirstArgs) {
+    return this.prismaService.transaction.findFirst(findFirst);
   }
 
-  async findManyRaw(params: Prisma.TransactionFindManyArgs): Promise<any> {
-    return this.findMany(params);
+  update(updateDto: Prisma.TransactionUpdateArgs) {
+    return this.prismaService.transaction.update(updateDto);
   }
 
-  async deleteRaw(
-    where: Prisma.TransactionWhereUniqueInput,
-  ): Promise<Transaction> {
-    return this.delete(where);
+  delete(deleteDto: Prisma.TransactionDeleteArgs) {
+    return this.prismaService.transaction.delete(deleteDto);
   }
 }

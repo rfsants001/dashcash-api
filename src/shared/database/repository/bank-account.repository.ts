@@ -1,34 +1,28 @@
-import { BankAccount, Prisma } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
-import { BaseRepository } from './base.repository';
 
-export class BankAccountRepository extends BaseRepository<
-  BankAccount,
-  Prisma.BankAccountCreateInput,
-  Prisma.BankAccountUpdateInput
-> {
-  constructor(protected prisma: PrismaService) {
-    super(prisma, prisma.bankAccount);
+export class BankAccountRepository {
+  constructor(private prismaService: PrismaService) {}
+
+  create(createDto: Prisma.BankAccountCreateArgs) {
+    return this.prismaService.bankAccount.create(createDto);
   }
 
-  async createRaw(data: Prisma.BankAccountCreateInput): Promise<BankAccount> {
-    return this.create(data);
+  findMany<T extends Prisma.BankAccountFindFirstArgs>(
+    findManyDto: Prisma.SelectSubset<T, Prisma.BankAccountFindManyArgs>,
+  ) {
+    return this.prismaService.bankAccount.findMany(findManyDto);
   }
 
-  async updateRaw(
-    where: Prisma.BankAccountWhereUniqueInput,
-    data: Prisma.BankAccountUpdateInput,
-  ): Promise<BankAccount> {
-    return this.update(where, data);
+  findFirst(findFirst: Prisma.BankAccountFindFirstArgs) {
+    return this.prismaService.bankAccount.findFirst(findFirst);
   }
 
-  async findManyRaw(params: Prisma.BankAccountFindManyArgs): Promise<any> {
-    return this.findMany(params);
+  update(updateDto: Prisma.BankAccountUpdateArgs) {
+    return this.prismaService.bankAccount.update(updateDto);
   }
 
-  async deleteRaw(
-    where: Prisma.BankAccountWhereUniqueInput,
-  ): Promise<BankAccount> {
-    return this.delete(where);
+  delete(deleteDto: Prisma.BankAccountDeleteArgs) {
+    return this.prismaService.bankAccount.delete(deleteDto);
   }
 }
