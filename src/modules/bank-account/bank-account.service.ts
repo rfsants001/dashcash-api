@@ -14,13 +14,11 @@ export class BankAccountService {
     const { name, initialBalance, color, type } = createBankAccountDto;
 
     return this.bankAccountRepo.create({
-      data: {
-        name,
-        initialBalance,
-        color,
-        type,
-        user: { connect: { id: userId } },
-      },
+      name,
+      initialBalance,
+      color,
+      type,
+      user: { connect: { id: userId } },
     });
   }
 

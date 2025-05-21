@@ -1,11 +1,12 @@
 import { Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
-
+import { Injectable } from '@nestjs/common';
+@Injectable()
 export class BankAccountRepository {
   constructor(private prismaService: PrismaService) {}
 
-  create(createDto: Prisma.BankAccountCreateArgs) {
-    return this.prismaService.bankAccount.create(createDto);
+  create(data: Prisma.BankAccountCreateInput) {
+    return this.prismaService.bankAccount.create({ data });
   }
 
   findMany<T extends Prisma.BankAccountFindFirstArgs>(

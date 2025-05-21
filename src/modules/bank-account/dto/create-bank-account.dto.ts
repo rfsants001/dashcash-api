@@ -1,5 +1,5 @@
 import { BankAccountType } from '@prisma/client';
-import { IsDate, IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 export class CreateBankAccountDto {
   @IsNotEmpty()
@@ -17,12 +17,4 @@ export class CreateBankAccountDto {
   @IsNotEmpty()
   @IsString()
   color: string;
-
-  @IsNotEmpty()
-  @IsDate()
-  createdAt: Date;
-
-  @IsNotEmpty()
-  @IsDate()
-  updatedAt: Date;
 }
