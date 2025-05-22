@@ -7,9 +7,10 @@ import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './modules/auth/guards/auth-guard.guard';
 import { BankAccountModule } from './modules/bank-account/bank-account.module';
 import { CategoryModule } from './modules/category/category.module';
+import { TransactionModule } from './modules/transaction/transaction.module';
 
 @Module({
-  imports: [DatabaseModule, AuthModule, BankAccountModule, CategoryModule],
+  imports: [DatabaseModule, AuthModule, BankAccountModule, CategoryModule, TransactionModule],
   controllers: [AppController],
   providers: [AppService, { provide: APP_GUARD, useClass: AuthGuard }],
 })

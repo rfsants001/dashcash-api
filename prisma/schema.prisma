@@ -64,7 +64,7 @@ model Transaction {
   bankAccountId String          @map("bank_account_id") @db.Uuid()
   categoryId    String?         @map("category_id") @db.Uuid()
   description   String
-  value         Float
+  value         Int
   date          DateTime
   type          TransactionType
   createdAt     DateTime        @default(now())

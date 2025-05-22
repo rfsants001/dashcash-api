@@ -6,5 +6,6 @@ import { ValidateCategoryOwnershipService } from './services/validate-category-o
 @Module({
   controllers: [CategoryController],
   providers: [CategoryService, ValidateCategoryOwnershipService],
+  exports: [ValidateCategoryOwnershipService],
 })
 export class CategoryModule {}
