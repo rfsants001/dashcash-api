@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { CreateBankAccountDto } from './dto/create-bank-account.dto';
 import { UpdateBankAccountDto } from './dto/update-bank-account.dto';
 import { BankAccountRepository } from 'src/shared/database/repository/bank-account.repository';
@@ -10,27 +10,44 @@ export class BankAccountService {
     private readonly bankAccountRepo: BankAccountRepository,
     private readonly validateBankAccountOwnershipService: ValidateBankAccountOwnershipService,
   ) {}
+
   create(createBankAccountDto: CreateBankAccountDto, userId: string) {
     const { name, initialBalance, color, type } = createBankAccountDto;
 
-    return this.bankAccountRepo.create({
-      name,
-      initialBalance,
-      color,
-      type,
-      user: { connect: { id: userId } },
-    });
+    try {
+      return this.bankAccountRepo.create({
+        name,
+        initialBalance,
+        color,
+        type,
+        user: { connect: { id: userId } },
+      });
+    } catch (error) {
+      console.error(
+        '[BankAccountService][create] Error creating bank account:',
+        error,
+      );
+      throw new InternalServerErrorException('Failed to create bank account');
+    }
   }
 
   findAll(userId: string) {
-    return this.bankAccountRepo.findMany({
-      where: {
-        userId,
-      },
-    });
+    try {
+      return this.bankAccountRepo.findMany({
+        where: {
+          userId,
+        },
+      });
+    } catch (error) {
+      console.error(
+        `[BankAccount][find] Failed to find bank accounts for userId=${userId}`,
+        error,
+      );
+      throw new InternalServerErrorException('Failed to find transactions');
+    }
   }
 
-  update(
+  async update(
     userId: string,
     bankAccountId: string,
     updateBankAccountDto: UpdateBankAccountDto,
@@ -38,12 +55,12 @@ export class BankAccountService {
     const { name, initialBalance, color, type } = updateBankAccountDto;
 
     try {
-      void this.validateBankAccountOwnershipService.validate(
+      await this.validateBankAccountOwnershipService.validate(
         userId,
         bankAccountId,
       );
 
-      return this.bankAccountRepo.update({
+      const bankAccount = await this.bankAccountRepo.update({
         where: {
           id: bankAccountId,
         },
@@ -54,27 +71,34 @@ export class BankAccountService {
           type,
         },
       });
+
+      return bankAccount;
     } catch (error) {
-      console.error('Error validating bank account ownership:', error);
-      throw new Error('Bank account not found or not owned by user');
+      console.error(
+        `[BankAccount][update] Failed to update bank account=${bankAccountId} for userId=${userId}`,
+        error,
+      );
+      throw new InternalServerErrorException('Failed to update bank account');
     }
   }
 
-  remove(userId: string, bankAccountId: string) {
+  async remove(userId: string, bankAccountId: string) {
     try {
-      void this.validateBankAccountOwnershipService.validate(
+      await this.validateBankAccountOwnershipService.validate(
         userId,
         bankAccountId,
       );
 
-      return this.bankAccountRepo.delete({
-        where: {
-          id: bankAccountId,
-        },
-      });
+      return {
+        message: 'BankAccount removed successfully',
+        bankAccountId,
+      };
     } catch (error) {
-      console.error('Error validating bank account ownership:', error);
-      throw new Error('Bank account not found or not owned by user');
+      console.error(
+        `[BankAccount][remove] Failed to remove bank account for userId=${userId}`,
+        error,
+      );
+      throw new InternalServerErrorException('Failed to remove bank account');
     }
   }
 }

@@ -34,7 +34,10 @@ export class TransactionService {
         },
       });
     } catch (error) {
-      console.error('Error creating transaction:', error);
+      console.error(
+        `[TransactionService][create] Failed to create transaction`,
+        error,
+      );
       throw new InternalServerErrorException('Failed to create transaction');
     }
   }
@@ -47,7 +50,10 @@ export class TransactionService {
         },
       });
     } catch (error) {
-      console.error('Error finding transactions:', error);
+      console.error(
+        `[TransactionService][find] Failed to find transactions for userId=${userId}`,
+        error,
+      );
       throw new InternalServerErrorException('Failed to find transactions');
     }
   }
@@ -61,7 +67,7 @@ export class TransactionService {
       updateTransactionDto;
 
     try {
-      void this.validateOwnership(
+      await this.validateOwnership(
         userId,
         bankAccountId,
         categoryId,
@@ -83,29 +89,36 @@ export class TransactionService {
         },
       });
 
-      return {
-        newDescription: transaction.description,
-        newValue: transaction.value,
-        newType: transaction.type,
-        newDate: transaction.date,
-      };
+      return transaction;
     } catch (error) {
-      console.error('Error updating transaction:', error);
+      console.error(
+        `[TransactionService][update] Failed to update transactionId=${transactionId} for userId=${userId}`,
+        error,
+      );
       throw new InternalServerErrorException('Failed to update transaction');
     }
   }
-  remove(userId: string, transactionId: string) {
-    try {
-      void this.transactionValidate.validate(userId, transactionId);
 
-      return this.transactionRepo.delete({
+  async remove(userId: string, transactionId: string) {
+    try {
+      await this.transactionValidate.validate(userId, transactionId);
+
+      await this.transactionRepo.delete({
         where: {
           id: transactionId,
           userId,
         },
       });
+
+      return {
+        message: 'Transaction removed successfully',
+        transactionId,
+      };
     } catch (error) {
-      console.error('Error removing transaction:', error);
+      console.error(
+        `[TransactionService][remove] Failed to remove transaction for userId=${userId}`,
+        error,
+      );
       throw new InternalServerErrorException('Failed to remove transaction');
     }
   }

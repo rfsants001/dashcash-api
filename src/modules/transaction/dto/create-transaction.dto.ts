@@ -3,6 +3,7 @@ import {
   IsDateString,
   IsEnum,
   IsNotEmpty,
+  IsNumber,
   IsString,
   IsUUID,
 } from 'class-validator';
@@ -23,7 +24,7 @@ export class CreateTransactionDto {
   description: string;
 
   @IsNotEmpty()
-  @IsString()
+  @IsNumber()
   value: number;
 
   @IsString()
